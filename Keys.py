@@ -22,6 +22,7 @@ class keys:
     A = 0x1E
     S = 0x1F
     D = 0x20
+    C = 0x2E
 
 # redefine c structs
 PUL = ctypes.POINTER(ctypes.c_ulong)
@@ -78,6 +79,15 @@ def ReleaseKey(hexKeyCode):
     x = Input( ctypes.c_ulong(1), ii_ )
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
+def ClickKey(hexKeyCode):
+    """
+    Press and Release
+    :param hexKeyCode: W A S D
+    :return:
+    """
+    PressKey(hexKeyCode)
+    ReleaseKey(hexKeyCode)
+
 # Here is an example
 def example_control():
     """
@@ -90,3 +100,34 @@ def example_control():
     time.sleep(10)
     ReleaseKey(W)
     print('stop')
+
+# 方向控制
+# Direction Controller
+class Direct:
+    # 加油门
+    @staticmethod
+    def forward():
+        PressKey(keys.W)
+
+    # 起步至定速巡航
+    @staticmethod
+    def cruising():
+        time.sleep(1)
+        PressKey(keys.W)
+        time.sleep(3.5)
+        ReleaseKey(keys.W)
+        ClickKey(keys.C)
+
+    # left
+    @staticmethod
+    def left(delay=0):
+        PressKey(keys.A)
+        time.sleep(delay)
+        ReleaseKey(keys.A)
+
+    # right
+    @staticmethod
+    def right(delay=0):
+        PressKey(keys.D)
+        time.sleep(delay)
+        ReleaseKey(keys.D)
