@@ -2,11 +2,12 @@
 """
 @File    :   Keys.py
 
-@Time             @Author    @Version    @Desciption
+@Time             @Author    @Version    @Description
 ------------      -------    --------    -----------
 2021/4/30 12:35   FF7518     1.0         None
 """
 import ctypes
+import win32api as wapi
 import time
 
 SendInput = ctypes.windll.user32.SendInput
@@ -23,6 +24,7 @@ class keys:
     S = 0x1F
     D = 0x20
     C = 0x2E
+
 
 # redefine c structs
 PUL = ctypes.POINTER(ctypes.c_ulong)
@@ -131,3 +133,4 @@ class Direct:
         PressKey(keys.D)
         time.sleep(delay)
         ReleaseKey(keys.D)
+

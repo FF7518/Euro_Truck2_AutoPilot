@@ -1,11 +1,8 @@
-import numpy as np
-from PIL import ImageGrab
-import cv2
-import time
-import win32gui
-from mss import mss
 
-from Keys import Direct
+# 对当前画面处理，信息提取
+import numpy as np
+import cv2
+import win32gui
 
 from PID import simpleCtrl
 
@@ -166,7 +163,7 @@ masked area
 def convert2gray(img):
     # gray
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # canny
+    # canny 边缘检测
     gray = cv2.Canny(gray, threshold1=100, threshold2=200)
     # 高斯模糊
     gray = cv2.GaussianBlur(gray, ksize=(5,5), sigmaX=0)
@@ -187,46 +184,3 @@ def convert2gray(img):
 
     return gray, img
 
-
-# 15 fps
-def screen_mss():
-    bounding_box = {
-        'top': 40, 'left': 0,
-        'width': 1024, 'height': 768
-    }
-    sct = mss()
-    last_time = time.time()
-
-    while True:
-        sct_img = np.array(sct.grab(bounding_box))
-        cvt_img, original_img = convert2gray(sct_img)
-        # 原图
-        cv2.imshow('original', original_img)
-        # 灰度图
-        # cv2.imshow('screen', cvt_img)
-        # print('fps {} '.format(1 / (time.time() - last_time)))
-        last_time = time.time()
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            cv2.destroyAllWindows()
-            break
-
-
-# 10 fps
-def screen_pil():
-    last_time = time.time()
-    bbox = Win32screen().window()
-    while True:
-        img = np.array(ImageGrab.grab(bbox=bbox))
-        print('fps {} '.format(1 / (time.time() - last_time)))
-        last_time = time.time()
-        # cv2.resizeWindow('sync window', 640, 360)
-        cv2.imshow('sync window', cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            cv2.destroyAllWindows()
-            break
-
-
-if __name__ == '__main__':
-    time.sleep(7)
-    Direct.cruising()
-    screen_mss()

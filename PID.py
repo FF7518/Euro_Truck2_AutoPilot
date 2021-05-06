@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
-'''
-@File    :   PID.py    
+"""
+@File    :   PID.py
 
-@Time             @Author    @Version    @Desciption
+@Time             @Author    @Version    @Description
 ------------      -------    --------    -----------
 2021/4/30 15:15   FF7518     1.0         None
-'''
+"""
 from Keys import Direct
 
 def simpleCtrl(k1, k2):

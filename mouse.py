@@ -2,7 +2,7 @@
 '''
 @File    :   mouse.py    
 
-@Time             @Author    @Version    @Desciption
+@Time             @Author    @Version    @Description
 ------------      -------    --------    -----------
 2021/4/30 13:00   FF7518     1.0         None
 '''
