@@ -106,14 +106,14 @@ def screen_record():
             # run a color convert:
             screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
             # resize to something a bit more acceptable for a CNN
-            # screen = cv2.resize(screen, (80, 60))
+            screen = cv2.resize(screen, (800, 600))
             # get key datamat
             output = get_key()
             training_data.append([screen, output])
             print(len(training_data))
             # cv2.imshow('window', cv2.cvtColor(screen, cv2.COLOR_BGR2RGB))
-            if len(training_data) % 500 == 0:
-                np.save('test.npy', np.array(training_data), allow_pickle=True)
+            if len(training_data) % 5000 == 0:
+                np.save('EuroTruck_v6_highway_sunny.npy', np.array(training_data), allow_pickle=True)
                 print('ok')
                 break
             if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -121,17 +121,29 @@ def screen_record():
                 break
 
 def read_test():
-    train = np.load('test.npy', allow_pickle=True)
-    cv2.resizeWindow('good', 1024, 40)
+    train = np.load('EuroTruck_v6_highway_sunny.npy', allow_pickle=True)
+    fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+    path = 'EuroTruck_v6_highway_sunny.avi'
+    fps = 15
+    imgsize = (800, 600)
+    # 灰度图要False
+    vw = cv2.VideoWriter(path, fourcc, fps, imgsize, False)
+
     for data in train:
         img = data[0]
         ctrl = data[1]
-        cv2.imshow('frame ctrl {}'.format(ctrl), img)
+        # print(img)
+        img = cv2.resize(img, (800, 600))
+        # cv2.imshow('frame ctrl {}'.format(ctrl), img)
+        cv2.imshow('road', img)
+        vw.write(img)
+        # print(vw.isOpened())
         print(img.shape, ctrl)
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
 
+    vw.release()
     cv2.destroyAllWindows()
 
 
