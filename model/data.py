@@ -7,10 +7,11 @@
 2021/5/7 12:25   FF7518     1.0         None
 """
 # 加载数据集
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision.transforms import ToTensor, Lambda
 import numpy as np
 import pandas as pd
+import cv2
 import matplotlib.pyplot as plt
 
 
@@ -49,12 +50,15 @@ def load_data(filepath):
 
     return ETDataLoader
 
+def crop(image):
+    pass
+
 if __name__ == '__main__':
     et = load_data('../EuroTruck_v6_highway_small.npy')
-    print(len(et))
+    # print(len(et))
     dict_data = next(iter(et))
     image = dict_data['image']
     label = dict_data['label']
-    print(image.size())
-    print(image[0])
-    print(plt.imshow(image[0], cmap='gray'))
+    # print(image.size())
+    # print(image[0])
+    # print(plt.imshow(image[0], cmap='gray'))

@@ -23,11 +23,11 @@ class EuroTruckModel(nn.Module):
 
     def forward(self, x):
         batch_size = x.size(0)
-        print('[#1]')
-        print(x.shape)
+        # print('[#1]')
+        # print(x.shape)
         x = F.relu(self.pool(self.conv1(x)))
-        print('[#2]')
-        print(x.shape)
+        # print('[#2]')
+        # print(x.shape)
         x = F.relu(self.pool(self.conv2(x)))
         print(x.shape)
         x = x.view(batch_size, -1)

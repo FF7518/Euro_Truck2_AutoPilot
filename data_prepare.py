@@ -87,7 +87,7 @@ def get_key():
     return ctrl
 
 # 将ctrl转成整数
-def counter_keys(key: list) -> int:
+def convertKey2Val(key: list) -> int:
     """
     Multi-hot vector to one hot vector (represented as an integer)
     Input:
@@ -127,6 +127,16 @@ def counter_keys(key: list) -> int:
     else:
         return -1
 
+def convertKey2ValDirectionOnly(key : list) -> int:
+    # 按下A
+    if key[2]:
+        return 3
+    # 按下D
+    elif key[3]:
+        return 4
+    else:
+        return 0
+
 
 def screen_record():
     i = 3
@@ -148,11 +158,15 @@ def screen_record():
             # resize to something a bit more acceptable for a CNN
             screen = cv2.resize(screen, (800, 600))
             # get key datamat
-            output = counter_keys(get_key())
+            # output = convertKey2Val(get_key())
+            # 现在只考虑方向控制
+            output = convertKey2ValDirectionOnly(get_key())
+            if output == 0:
+                continue
             training_data.append([screen, output])
             print(len(training_data))
             # cv2.imshow('window', cv2.cvtColor(screen, cv2.COLOR_BGR2RGB))
-            if len(training_data) % 1000 == 0:
+            if len(training_data) % 1500 == 0 and len(training_data) > 0:
                 np.save('EuroTruck_v6_highway_small.npy', np.array(training_data), allow_pickle=True)
                 print('ok')
                 break
