@@ -70,23 +70,63 @@ def key_check():
 def get_key():
     key = key_check()
 
-    ctrl = np.zeros([2,2])
-    #  [ [ w s ]
-    #    [ a d ] ]
-    # w [0][0]
-    # s [0][1]
-    # a [1][0]
-    # d [1][1]
+    ctrl = list(np.zeros([4]).astype(np.uint8))
+    # [w s a d]
+    # [0,0,0,0]
+
     if 'W' in key:
-        ctrl[0][0] = 1
+        ctrl[0] = 1
     if 'S' in key:
-        ctrl[0][1] = 1
+        ctrl[1] = 1
     if 'A' in key:
-        ctrl[1][0] = 1
+        ctrl[2] = 1
     if 'D' in key:
-        ctrl[1][1] = 1
+        ctrl[3] = 1
+
 
     return ctrl
+
+# 将ctrl转成整数
+def counter_keys(key: list) -> int:
+    """
+    Multi-hot vector to one hot vector (represented as an integer)
+    Input:
+     - key numpy array of integers (1,0) of size 4
+    Output:
+    - One hot vector encoding represented as an index (int). If the vector does not represent any valid key
+    input the returned value will be -1
+    """
+    # 不做控制
+    if np.array_equal(key, [0, 0, 0, 0]):
+        return 0
+    # 按下W
+    elif np.array_equal(key, [1, 0, 0, 0]):
+        return 1
+    # 按下S
+    elif np.array_equal(key, [0, 1, 0, 0]):
+        return 2
+    # 按下A
+    elif np.array_equal(key, [0, 0, 1, 0]):
+        return 3
+    # 按下D
+    elif np.array_equal(key, [0, 0, 0, 1]):
+        return 4
+    # 按下W和A
+    elif np.array_equal(key, [1, 0, 1, 0]):
+        return 5
+    # 按下W和D
+    elif np.array_equal(key, [1, 0, 0, 1]):
+        return 6
+    # 按下S和A
+    elif np.array_equal(key, [0, 1, 1, 0]):
+        return 7
+    # 按下S和D
+    elif np.array_equal(key, [0, 1, 0, 1]):
+        return 8
+    # 其他情况(是无效的)
+    else:
+        return -1
+
 
 def screen_record():
     i = 3
@@ -108,12 +148,12 @@ def screen_record():
             # resize to something a bit more acceptable for a CNN
             screen = cv2.resize(screen, (800, 600))
             # get key datamat
-            output = get_key()
+            output = counter_keys(get_key())
             training_data.append([screen, output])
             print(len(training_data))
             # cv2.imshow('window', cv2.cvtColor(screen, cv2.COLOR_BGR2RGB))
-            if len(training_data) % 5000 == 0:
-                np.save('EuroTruck_v6_highway_sunny.npy', np.array(training_data), allow_pickle=True)
+            if len(training_data) % 1000 == 0:
+                np.save('EuroTruck_v6_highway_small.npy', np.array(training_data), allow_pickle=True)
                 print('ok')
                 break
             if cv2.waitKey(25) & 0xFF == ord('q'):
@@ -121,9 +161,9 @@ def screen_record():
                 break
 
 def read_test():
-    train = np.load('EuroTruck_v6_highway_sunny.npy', allow_pickle=True)
+    train = np.load('EuroTruck_v6_highway_small.npy', allow_pickle=True)
     fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-    path = 'EuroTruck_v6_highway_sunny.avi'
+    path = 'EuroTruck_v6_highway_small.avi'
     fps = 15
     imgsize = (800, 600)
     # 灰度图要False
