@@ -11,53 +11,62 @@ import torch
 from model import EuroTruckModel, device
 
 
-et_train = load_data('../EuroTruck_v6_highway_small.npy')
-et_test = load_data('../EuroTruck_v6_highway_test.npy')
+train_loader = load_data('../EuroTruck_v6_highway_small.npy')
+test_loader = load_data('../EuroTruck_v6_highway_test.npy')
 
-model = EuroTruckModel(n_speed_classes=2, n_turn_classes=2).to(device)
-optimizer = torch.optim.RMSprop(model.parameters(), lr=1e-2)
+model = EuroTruckModel().to(device)
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-2, momentum=0.5)
 criterion = torch.nn.CrossEntropyLoss()
 
-def train(epoch=2):
-    print('training------------------------')
+
+def train(epoch):
     running_loss = 0.0
-    for batch_idx, data in enumerate(et_train, 0):
-        print('epoch 1, batch {}'.format(batch_idx))
+    for batch_idx, data in enumerate(train_loader, 0):
+        # print(data)
         img = data['image']
+        target = data['label']
         img = torch.unsqueeze(img, 1)
         img = img.float() / 255.0
-        # print(img[0])
-        target = data['label']
-        img, speed_target = img.to(device), target.to(device)
+        # target = target.float()
+
+        img, target = img.to(device), target.to(device)
         optimizer.zero_grad()
 
-        #       # forward + backward + update
+        # forward + backward + update
         output = model(img)
+        # print(type(target[0]))
+
         loss = criterion(output, target)
+
         loss.backward()
+
         optimizer.step()
 
         running_loss += loss.item()
-        if batch_idx % 1 == 0 :
-            print('[%d, %5d] loss: %.3f' % (epoch+1, batch_idx+1, running_loss / 2000))
+        if batch_idx % 3 == 2 :
+            print('[第%d轮迭代, batch=%5d] loss: %.3f' % (epoch+1, batch_idx+1, running_loss / 2000))
             running_loss = 0.0
 
-#   test
-    print('testing------------------------')
+
+def test():
+    print('test--------------------')
     correct = 0
-    test_loss = 0.0
-    for batch_idx, data in enumerate(et_test, 0):
-        print('epoch 1, batch {}'.format(batch_idx))
-        img = data['image']
-        img = torch.unsqueeze(img, 1)
-        img = img.float() / 255.0
-        # print(img[0])
-        target = data['label']
-        img, speed_target = img.to(device), target.to(device)
-        output = model(img)
-        loss = criterion(output, target)
-        print(output, loss)
+    total = 0
+    with torch.no_grad():
+        for data in test_loader:
+            img = data['image']
+            target = data['label']
+
+            img = torch.unsqueeze(img, 1)
+            img = img.float() / 255.0
+            # target = target.float()
+
+            output = model(img)
+
+            print(output.data)
 
 
 if __name__ == '__main__':
-    train()
+    for epoch in range(5):
+        train(epoch)
+        test()

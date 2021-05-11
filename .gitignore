@@ -3,3 +3,6 @@
 *.npz
 *.avi
 trashbin
+*.h5
+/model/
+*.ipynb

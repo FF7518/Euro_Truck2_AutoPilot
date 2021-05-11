@@ -14,7 +14,7 @@ from random import shuffle
 
 # 对数据进行预处理
 def preProcess():
-    data = np.load('EuroTruck_v6_highway_sunny.npy', allow_pickle=True)
+    data = np.load('EuroTruck_v6_highway_small.npy', allow_pickle=True)
     print(data.shape)
 
     df = pd.DataFrame(data)
@@ -22,9 +22,9 @@ def preProcess():
     labels = df.iloc[:, 1]
     turn = []
     speed = []
-    for i in labels:
-        speed.append(i[0])
-        turn.append(i[1])
+    # for i in labels:
+    #     speed.append(i[0])
+    #     turn.append(i[1])
     print(labels[1313])
     # print(df[1].value_counts())
 

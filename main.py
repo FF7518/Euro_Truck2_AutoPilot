@@ -4,12 +4,12 @@ import cv2
 import numpy as np
 from PIL import ImageGrab
 from mss import mss
-
 from Keys import Direct
 
 # 15 fps
 from grab import Win32screen, convert2gray
 
+from run import start
 
 def screen_mss():
     bounding_box = {
@@ -50,5 +50,6 @@ def screen_pil():
 
 if __name__ == '__main__':
     time.sleep(7)
-    Direct.cruising()
-    screen_mss()
+    # Direct.cruising()
+    # screen_mss()
+    start()

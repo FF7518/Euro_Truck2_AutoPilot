@@ -1,16 +1,98 @@
-# -*- encoding: utf-8 -*-
 """
-@File    :   Keys.py
 
-@Time             @Author    @Version    @Description
-------------      -------    --------    -----------
-2021/4/30 12:35   FF7518     1.0         None
+keys
+2021/5/11 20:31
+
+=========================
+
+INTRODUCTIONS
+
+=========================
 """
+import win32gui, win32ui, win32con, win32api
 import ctypes
-import win32api as wapi
 import time
+import numpy as np
 
-SendInput = ctypes.windll.user32.SendInput
+from config import KeyConfig
+
+"""
+~~~~~~~~~~~~~~~~~~~~~~~~~
+        sensor
+~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
+
+keyList = ["\b"]
+
+for char in "ABCDEFGHIJKLMNOPQRSTUVWXYZ 123456789,.'£$/\\":
+    keyList.append(char)
+
+
+def key_check():
+
+    keys = []
+    for key in keyList:
+        if win32api.GetAsyncKeyState(ord(key)):
+            keys.append(key)
+    return keys
+
+
+def get_key():
+
+    key = key_check()
+
+    ctrl = list(np.zeros([4]).astype(np.uint8))
+    # [w s a d]
+    # [0,0,0,0]
+
+    # 其他按键，如有关退出的按键q
+    extra = None
+
+    if 'W' in key:
+        ctrl[0] = 1
+    if 'S' in key:
+        ctrl[1] = 1
+    if 'A' in key:
+        ctrl[2] = 1
+    if 'D' in key:
+        ctrl[3] = 1
+
+    if 'Z' in key:
+        extra = 'Pause'
+    if 'Q' in key:
+        extra = 'Quit'
+
+    return ctrl, extra
+
+
+# 将ctrl转成整数 只考虑转向
+def convertKey2ValDirectionOnly(key: list) -> int:
+    # 按下A
+    if key[2]:
+        return KeyConfig.A
+    # 按下D
+    elif key[3]:
+        return KeyConfig.D
+    else:
+        return KeyConfig.RELEASED
+
+
+def convertKey2ValSpeedOnly(key: list) -> int:
+    # 按下W
+    if key[0]:
+        return KeyConfig.W
+    # 按下S
+    elif key[1]:
+        return KeyConfig.S
+    else:
+        return KeyConfig.RELEASED
+
+
+"""
+~~~~~~~~~~~~~~~~~~~~~~~~~
+        control
+~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
 
 # define Direction Control
 W = 0x11
@@ -65,8 +147,7 @@ class Input(ctypes.Structure):
                 ("ii", Input_I)]
 
 
-# Export Funtions
-# Note that you need to use two together
+# control functions
 def PressKey(hexKeyCode):
     """
     :param hexKeyCode: W A S D
@@ -91,57 +172,3 @@ def ReleaseKey(hexKeyCode):
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
 
-def ClickKey(hexKeyCode):
-    """
-    Press and Release
-    :param hexKeyCode: W A S D
-    :return:
-    """
-    PressKey(hexKeyCode)
-    ReleaseKey(hexKeyCode)
-
-
-# Here is an example
-def example_control():
-    """
-    1. run code
-    2. switch into game in 5s
-    """
-    time.sleep(5)
-    print('start')
-    PressKey(W)
-    time.sleep(10)
-    ReleaseKey(W)
-    print('stop')
-
-
-# 方向控制
-# Direction Controller
-class Direct:
-    # 加油门
-    @staticmethod
-    def forward():
-        PressKey(keys.W)
-
-    # 起步至定速巡航
-    @staticmethod
-    def cruising():
-        time.sleep(1)
-        PressKey(keys.W)
-        time.sleep(3)
-        ReleaseKey(keys.W)
-        ClickKey(keys.C)
-
-    # left
-    @staticmethod
-    def left(delay=0):
-        PressKey(keys.A)
-        time.sleep(delay)
-        ReleaseKey(keys.A)
-
-    # right
-    @staticmethod
-    def right(delay=0):
-        PressKey(keys.D)
-        time.sleep(delay)
-        ReleaseKey(keys.D)

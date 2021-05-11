@@ -21,7 +21,14 @@ class EuroTruckDataset(Dataset):
         data = np.load(filepath, allow_pickle=True)
         df = pd.DataFrame(data)
         self.images = df.iloc[:, 0]
-        self.labels = df.iloc[:, 1]
+        # self.labels = df.iloc[:, 1]
+        labels = df.iloc[:, 1]
+        self.labels = []
+        for l in labels:
+            if l == 3:
+                self.labels.append(0)
+            else:
+                self.labels.append(1)
         self.transform = transform
         self.target_transform = target_transform
 
@@ -45,20 +52,22 @@ class EuroTruckDataset(Dataset):
 def load_data(filepath):
     ETDataset = EuroTruckDataset(filepath)
     ETDataLoader = DataLoader(ETDataset,
-                        batch_size=100,
-                        shuffle=False)
+                              batch_size=100,
+                              shuffle=False)
 
     return ETDataLoader
+
 
 def crop(image):
     pass
 
+
 if __name__ == '__main__':
-    et = load_data('../EuroTruck_v6_highway_small.npy')
+    et = load_data('../EuroTruck_v6_highway_test.npy')
     # print(len(et))
     dict_data = next(iter(et))
     image = dict_data['image']
     label = dict_data['label']
-    # print(image.size())
+    print(label)
     # print(image[0])
-    # print(plt.imshow(image[0], cmap='gray'))
+    # plt.imshow(image[0], cmap='gray')
