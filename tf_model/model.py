@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@File    :   model.py    
+@File    :   torch_model.py
 
 @Time             @Author    @Version    @Description
 ------------      -------    --------    -----------
@@ -23,8 +23,8 @@ class EuroTruckModel:
         model = models.Sequential()
         model.add(layers.Conv2D(filters=32, kernel_size=(5, 5), activation='relu', input_shape=input_shape))
         model.add(layers.MaxPooling2D((2, 2)))
-        # model.add(layers.Conv2D(filters=64, kernel_size=(5, 5), activation='relu'))
-        # model.add(layers.MaxPooling2D((2, 2)))
+        # torch_model.add(layers.Conv2D(filters=64, kernel_size=(5, 5), activation='relu'))
+        # torch_model.add(layers.MaxPooling2D((2, 2)))
 
         model.add(layers.Flatten())
         model.add(layers.Dense(32, activation='relu'))
@@ -45,4 +45,4 @@ class EuroTruckModel:
         return self.model
 
     # def m_fit(self, train_x, train_y, epoch, batch_size):
-    #     self.model.fit(train_x, train_y, epochs=epoch, batch_size=batch_size)
+    #     self.torch_model.fit(train_x, train_y, epochs=epoch, batch_size=batch_size)

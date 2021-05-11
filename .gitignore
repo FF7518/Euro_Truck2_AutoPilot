@@ -4,5 +4,5 @@
 *.avi
 trashbin
 *.h5
-model
+torch_model
 *.ipynb
