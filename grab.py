@@ -1,10 +1,10 @@
-
 # 对当前画面处理，信息提取
 import numpy as np
 import cv2
 import win32gui
 
 from PID import simpleCtrl
+
 
 class Win32screen:
     def __init__(self):
@@ -121,6 +121,7 @@ def optRoadline(lines, color=(0, 255, 255), thickness=3):
     except Exception as e:
         print(str(e))
 
+
 # 绘制道路线条
 def roadline(img, gray, lines):
     try:
@@ -142,6 +143,7 @@ def roadline(img, gray, lines):
 
     return img, gray
 
+
 # 参数： k1 k2
 # PID算法对行进方向进行控制
 
@@ -160,13 +162,15 @@ masked area
 5,720-------------------------1020,720
 
 '''
+
+
 def convert2gray(img):
     # gray
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # canny 边缘检测
     gray = cv2.Canny(gray, threshold1=100, threshold2=200)
     # 高斯模糊
-    gray = cv2.GaussianBlur(gray, ksize=(5,5), sigmaX=0)
+    gray = cv2.GaussianBlur(gray, ksize=(5, 5), sigmaX=0)
     # mask
     vertices = np.array([
         [5, 700],
@@ -179,8 +183,12 @@ def convert2gray(img):
     gray = roi(gray, [vertices])
     # 霍夫变换
     lines = cv2.HoughLinesP(gray, rho=1, theta=np.pi / 180, threshold=90,
-                           minLineLength=30, maxLineGap=10)
+                            minLineLength=30, maxLineGap=10)
     img, gray = roadline(img, gray, lines)
 
     return gray, img
 
+
+if __name__ == '__main__':
+    w = Win32screen()
+    print(w.window())

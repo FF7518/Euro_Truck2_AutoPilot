@@ -46,7 +46,7 @@ DEFAULT_DATA_SIZE_LARGER = 10000
 
 
 TRAIN_CONFIG = {
-    'DATA_PATH': 'test.npy',
+    'DATA_PATH': 'EuroTruck_v1_direct-only_normal.npy',
     'DATA_LENGTH': DEFAULT_DATA_SIZE_SMALL,
 }
 TEST_CONFIG = {

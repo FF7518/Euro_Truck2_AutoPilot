@@ -22,7 +22,7 @@ from common.control import Direct
 from keras.models import load_model
 
 
-MODEL_PATH = './tf_model/EuroTruck-cnn-normal-DirectOnly-4-epochs.h5'
+MODEL_PATH = './tf_model/EuroTruck-alexnet-p1-normal-DirectOnly-6-epochs.h5'
 
 SUCCESS_FLAG = True
 FAIL_FLAG = False
